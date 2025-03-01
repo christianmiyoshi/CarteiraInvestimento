@@ -1,6 +1,8 @@
 from datetime import date, timedelta, datetime
 from functools import lru_cache
 
+from domain.tax_calculator import TaxCalculator
+
 
 IOF_PERCENT = {
     0: 100,
@@ -37,16 +39,26 @@ IOF_PERCENT = {
 }
 
 class RendaFixa:
-    def __init__(self, value, interest_year, timestamp: datetime, maturity: datetime):
+    def __init__(self, value, interest_year, timestamp: datetime, maturity: datetime, tax_algorithm: TaxCalculator):
         assert timestamp < maturity
         self.interest_year = interest_year
         self.value = value
         self.timestamp = timestamp
+        self.tax_algorithm = tax_algorithm
 
     def net_value(self, date: date):
-        return self.gross_value(date) - self.tax_value(date)
+        return self.gross_value(date) - self.tax_iof_value(date)
 
-    def tax_value(self, date: date):
+    def tax_iof_value(self, date: date):
+        return self.tax_algorithm.calculate(self, date) + self.iof_value(date)
+
+    def gross_income_return_after_ios(self, date: date):
+        return self.gross_income_return(date) - self.iof_value(date)
+    
+    def gross_income_return(self, date: date):
+        return self.gross_value(date) - self.value
+
+    def iof_value(self, date: date):
         assert date >= self.timestamp.date()
         number_days = (date - self.timestamp.date()).days
         if number_days > 30:
@@ -54,7 +66,7 @@ class RendaFixa:
             iof_tax = 0
         else:
             iof_percent = IOF_PERCENT[number_days]
-            iof_tax = (self.gross_value(date) - self.value) * iof_percent / 100
+            iof_tax = self.gross_income_return(date) * iof_percent / 100
         
         return iof_tax
 

@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
 
 from domain.renda_fixa import RendaFixa, IOF_PERCENT
+from services.renda_fixa_factory import RendaFixaFactory
 
 VALUE = 1000
 START_DATE = datetime(2025, 1, 1)
@@ -42,25 +43,22 @@ EXPECTED_INVESTMENT_RETURN = {
 
 
 class TestRendaFixa(unittest.TestCase):
+    def setUp(self):        
+        self.renda_fixa_factory = RendaFixaFactory()
+        return super().setUp()
+
     def test_iof_without_tax(self):
         start_date = datetime(2025, 1, 1)
-        next_year = datetime(2026, 1, 1)
         maturity = datetime(2027, 1, 1)
         start_value = 1000
         interest = 0.10
-        renda_fixa = RendaFixa(start_value,interest,start_date, maturity)
-
-        interest_daily = RendaFixa.daily_interest_percent(
-            interest,
-            start_date,
-            next_year
-        )
-        
+        renda_fixa = self.renda_fixa_factory.lci(start_value,interest,start_date, maturity)
+       
         for i in range(0, 31):
             date = (start_date + relativedelta(days=i)).date()            
             expected_data = EXPECTED_INVESTMENT_RETURN[i]
-            iof = renda_fixa.tax_value(date)
-            self.assertAlmostEqual(expected_data['iof'], iof, 7, f'IOF incorrect for day {i}' )            
+            iof = renda_fixa.tax_iof_value(date)
+            self.assertAlmostEqual(expected_data['iof'], iof, 9, f'IOF incorrect for day {i}' )            
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,4 +1,6 @@
 from datetime import date, timedelta, datetime
+from functools import lru_cache
+
 
 IOF_PERCENT = {
     0: 100,
@@ -56,9 +58,10 @@ class RendaFixa:
         
         return iof_tax
 
+    @lru_cache(maxsize=64)
     def gross_value(self, timestamp: date):
         number_days = RendaFixa.count_business_days(
-            self.timestamp.date(),
+            self.timestamp.date() + timedelta(days=1),
             timestamp
         )
 
@@ -72,13 +75,13 @@ class RendaFixa:
         return self.value * pow((1 + daily_interest_percent), number_days)
 
     @staticmethod
-    def count_business_days(start: date, end_not_included: date):    
-        return sum(1 for idx in range((end_not_included - start).days) 
-                   if (start + timedelta(days=idx)).weekday() < 5)
+    def count_business_days(start_included: date, end_included: date):            
+        return sum(1 for idx in range((end_included - start_included).days + 1) 
+                   if (start_included + timedelta(days=idx)).weekday() < 5)
 
     @staticmethod
     def daily_interest_percent(interest: float, start: date, end: date):
-        days = RendaFixa.count_business_days(start, end)
+        days = RendaFixa.count_business_days(start + timedelta(days=1), end)
         return pow((1 + interest), 1/days) - 1
 
 

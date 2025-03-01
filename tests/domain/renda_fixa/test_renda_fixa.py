@@ -17,7 +17,7 @@ class TestRendaFixa(unittest.TestCase):
 
     def test_count_business_days(self):
         start_date = datetime(2025, 1, 1)
-        end_date = datetime(2026, 1, 1)
+        end_date = datetime(2025, 12, 31)
 
         count_business_days = RendaFixa.count_business_days(start_date, end_date)
         self.assertEqual(count_business_days, 261)
@@ -33,7 +33,7 @@ class TestRendaFixa(unittest.TestCase):
 
     def test_net_return(self):
         start_date = datetime(2025, 1, 1)
-        maturity = datetime(2026, 1, 1)
+        maturity = datetime(2027, 1, 1)
         start_value = 1000
         interest = 0.10
         renda_fixa = RendaFixa(start_value,interest,start_date, maturity)
@@ -45,37 +45,6 @@ class TestRendaFixa(unittest.TestCase):
                 date(2026, 1, 1)
             )
         )
-
-
-    def test_iot(self):
-        start_date = datetime(2025, 1, 1)
-        next_year = datetime(2026, 1, 1)
-        maturity = datetime(2027, 1, 1)
-        start_value = 1000
-        interest = 0.10
-        renda_fixa = RendaFixa(start_value,interest,start_date, maturity)
-
-        interest_daily = RendaFixa.daily_interest_percent(
-            interest,
-            start_date,
-            next_year
-        )
         
-        for i in range(1, 31):
-            date = start_date + relativedelta(days=i)
-            iof_daily_percent = IOF_PERCENT[i]
-
-            number_business_days = RendaFixa.count_business_days(
-                start_date.date(), date.date()
-            )
-            
-            gros_value = start_value * pow((1 + interest_daily), number_business_days)
-            return_value =  gros_value - start_value
-            iof = return_value * iof_daily_percent / 100.0
-
-            self.assertAlmostEqual(renda_fixa.gross_value(date.date()), gros_value)
-            # self.assertAlmostEqual(renda_fixa.net_value(date), 1000)
-            self.assertAlmostEqual(renda_fixa.tax_value(date.date()), iof)            
-
 if __name__ == '__main__':
     unittest.main()

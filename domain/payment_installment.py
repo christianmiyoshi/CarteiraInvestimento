@@ -17,7 +17,7 @@ class PaymentInstallment:
 
         self.payments: list[CreditCardDebt] = []
 
-        current_date = self.start        
+        current_date = self.start
         for month in range(number_installments):
             self.payments.append(
                 CreditCardDebt(

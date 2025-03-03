@@ -50,8 +50,9 @@ class Wallet:
         return 0
 
     def brut_value(self, timestamp: datetime.datetime):
+
         sum_deposits = reduce(
             lambda acc, deposit: acc + deposit.value_at(timestamp),
             self.deposits, 0
-        )
+        )        
         return sum_deposits

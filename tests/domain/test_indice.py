@@ -1,11 +1,11 @@
 import unittest
 from datetime import datetime, date
-from domain.indice import Indice
+from domain.indice import Indice, RangedIndice
 from domain.payment_installment import PaymentInstallment
 
 class TestIndice(unittest.TestCase):
     def test_simple_indice(self):
-        indice = Indice("SELIC")
+        indice = RangedIndice("SELIC")
         indice.add_intereset(date(2020, 1, 1), 0.10)
         indice.add_intereset(date(2025, 1, 1), 0.15)
         indice.add_intereset(date(2025, 2, 1), 0.20)

@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from datetime import date
 
 
@@ -6,7 +7,16 @@ class InterestDate:
         self.date = date
         self.interest = interest_year
 
-class Indice:
+class Indice(ABC):
+    @abstractmethod
+    def get_interest_at(self, date: date):
+        pass
+
+class NoIndice(Indice):
+    def get_interest_at(self, date: date):
+        return 0
+    
+class RangedIndice(Indice):
     def __init__(self, name: str):
         self.name = name
         self.interest_list: list[InterestDate] = []

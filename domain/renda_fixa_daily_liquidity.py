@@ -1,14 +1,15 @@
 from datetime import date, timedelta, datetime
 from functools import lru_cache, reduce
+import copy
 
+from domain.indice import Indice
 from domain.iof_constant import IOF_PERCENT
 from domain.renda_fixa import RendaFixa
 from domain.tax_calculator import TaxCalculator
 
 class RendaFixaDailyLiquidity(RendaFixa):
-    def __init__(self, value, interest_year, timestamp: datetime, maturity: date, tax_algorithm: TaxCalculator):
-        assert timestamp.date() < maturity
-        self.main_renda_fixa = RendaFixa(value, interest_year, timestamp, maturity, tax_algorithm)
+    def __init__(self, *args, **kwargs):
+        self.main_renda_fixa = RendaFixa(*args, **kwargs)
         self.renda_fixas: list[RendaFixa] = [self.main_renda_fixa]
 
     def withdraw(self, value: float, date: date):
@@ -24,24 +25,14 @@ class RendaFixaDailyLiquidity(RendaFixa):
 
         initial_investment_for_value = self.main_renda_fixa.calculate_investment_to_have_net_value(value, date)
 
-        self.main_renda_fixa = RendaFixa(
-            self.main_renda_fixa.value - initial_investment_for_value,
-            self.main_renda_fixa.interest_year,
-            self.main_renda_fixa.timestamp,
-            self.main_renda_fixa.maturity,
-            self.main_renda_fixa.tax_algorithm
-        )
+        self.main_renda_fixa = copy.deepcopy(self.main_renda_fixa)
+        self.main_renda_fixa.value -= initial_investment_for_value
         self.renda_fixas.append(self.main_renda_fixa)
 
-        self.renda_fixas.append(
-            RendaFixa(
-                initial_investment_for_value,
-                self.main_renda_fixa.interest_year,
-                self.main_renda_fixa.timestamp,
-                date,
-                self.main_renda_fixa.tax_algorithm
-            )
-        )
+        second_investment = copy.deepcopy(self.main_renda_fixa)
+        second_investment.value = initial_investment_for_value
+        second_investment.maturity = date
+        self.renda_fixas.append(second_investment)
 
     def deposits(self):
         deposits_list = []

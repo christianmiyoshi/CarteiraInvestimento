@@ -1,19 +1,21 @@
 from datetime import date, timedelta, datetime
 from functools import lru_cache
 
+from domain.indice import Indice
 from domain.ir_regressive_table import ir_regressive_table, calculate_calendar_days
 from domain.deposit import Deposit
 from domain.iof_constant import IOF_PERCENT
 from domain.tax_calculator import TaxCalculator
 
 class RendaFixa:
-    def __init__(self, value, interest_year, timestamp: datetime, maturity: date, tax_algorithm: TaxCalculator):
+    def __init__(self, value, interest_year, timestamp: datetime, maturity: date, tax_algorithm: TaxCalculator, indice: Indice):
         assert timestamp.date() < maturity
         self.interest_year = interest_year
         self.value = value
         self.maturity = maturity
         self.timestamp = timestamp
         self.tax_algorithm = tax_algorithm
+        self.indice = indice
 
     def deposits(self):
         withdraw = Deposit(-self.value, self.timestamp)

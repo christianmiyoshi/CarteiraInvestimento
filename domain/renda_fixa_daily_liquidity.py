@@ -19,10 +19,11 @@ class RendaFixaDailyLiquidity(RendaFixa):
         net_value = self.main_renda_fixa.net_value(date)
 
         if net_value < value:
-            raise Exception("There is not enoght balance to withdraw")
+            raise Exception("There is not enough balance to withdraw")
 
         self.renda_fixas.remove(self.main_renda_fixa)
 
+        # TODO: IOF must be considered to withdraw right value
         initial_investment_for_value = self.main_renda_fixa.calculate_investment_to_have_net_value(value, date)
 
         self.main_renda_fixa = copy.deepcopy(self.main_renda_fixa)

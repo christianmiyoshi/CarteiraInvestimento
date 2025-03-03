@@ -36,3 +36,10 @@ class RendaFixaFactory:
             TaxRegressiveTableCalculator(),
             NO_INDEX
         )
+    
+    def lci_liquidity(self, value, interest_year, timestamp: datetime, maturity: datetime):
+        return RendaFixaDailyLiquidity(
+            value, interest_year, timestamp, maturity,
+            TaxFreeCalculator(),
+            NO_INDEX
+        )

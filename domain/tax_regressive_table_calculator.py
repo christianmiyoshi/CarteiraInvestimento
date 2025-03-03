@@ -7,6 +7,9 @@ from domain.tax_calculator import TaxCalculator
 
 class TaxRegressiveTableCalculator(TaxCalculator):
 
+    def aliquota(self, calendar_days: int):
+        return ir_regressive_table(calendar_days)
+
     def calculate(self, renda_fixa: RendaFixa, date: date):
         assert date >= renda_fixa.timestamp.date()
         income_after_iof = renda_fixa.gross_income_return_after_ios(date)

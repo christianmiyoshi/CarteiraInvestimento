@@ -30,7 +30,8 @@ class RendaFixa:
         # Lf = Rl + C0 = K Cf - K C0 + C0
         # C0 = Lf / (K (1+r)^t - K + 1)
         calendar_days = calculate_calendar_days(self.timestamp.date(), min(date, self.maturity))
-        aliquota = ir_regressive_table(calendar_days)
+        # TODO: this aliquota does not work for LCI
+        aliquota = self.tax_algorithm.aliquota(calendar_days)
         aliquota_sub_1 = (1 - aliquota)
         interest_percent = daily_interest_percent(
             self.interest_year,

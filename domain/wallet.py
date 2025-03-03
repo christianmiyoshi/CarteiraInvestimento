@@ -10,6 +10,10 @@ class Wallet:
     def __init__(self):
         self.deposits: list[Deposit] = []
         self.credit_cards: list[CreditCard] = []
+        self.renda_fixas: list[RendaFixa] = []
+
+    def invest(self, renda_fixa: RendaFixa):
+        self.renda_fixas.append(renda_fixa)
 
     def add_credit_card(self, credit_card: CreditCard):
         self.credit_cards.append(credit_card)
@@ -49,10 +53,15 @@ class Wallet:
     def tax_value(self, date: datetime.date):
         return 0
 
-    def brut_value(self, timestamp: datetime.datetime):
+    def brut_value(self, date: date):
+        timestamp = datetime.datetime.combine(date, datetime.datetime.max.time())
+        all_deposits = []
+        all_deposits += self.deposits
+        for renda in self.renda_fixas:
+            all_deposits += renda.deposits()
 
         sum_deposits = reduce(
             lambda acc, deposit: acc + deposit.value_at(timestamp),
-            self.deposits, 0
-        )        
+            all_deposits, 0
+        )
         return sum_deposits

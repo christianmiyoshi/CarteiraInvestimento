@@ -16,10 +16,9 @@ class RendaFixa:
         self.tax_algorithm = tax_algorithm
 
     def deposits(self):
-        return [
-            Deposit(-self.value, self.timestamp.date()), 
-            Deposit(self.net_value(self.maturity), self.maturity)
-        ]
+        withdraw = Deposit(-self.value, self.timestamp)
+        deposit = Deposit(self.net_value(self.maturity), datetime.combine(self.maturity, datetime.min.time()))
+        return [withdraw, deposit]
 
     def calculate_investment_to_have_net_value(self, current_value: float, date: date):
         # Cf = C0 (1 + r) ^ t

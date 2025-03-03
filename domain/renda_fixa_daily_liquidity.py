@@ -2,7 +2,7 @@ from datetime import date, timedelta, datetime
 from functools import lru_cache, reduce
 import copy
 
-from domain.indice import Indice
+from domain.index import Indice
 from domain.iof_constant import IOF_PERCENT
 from domain.renda_fixa import RendaFixa
 from domain.tax_calculator import TaxCalculator

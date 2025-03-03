@@ -23,7 +23,7 @@ class NoIndice(Indice):
         return 0
 
     def get_interest_in_period(self, start: date, end:date):
-        return 0
+        return 1
     
 class RangedIndex(Indice):
     def __init__(self, name: str):

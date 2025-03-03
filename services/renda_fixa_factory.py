@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from domain.indice import Indice, NoIndice
+from domain.index import Indice, NoIndice
 from domain.renda_fixa import RendaFixa
 from domain.renda_fixa_daily_liquidity import RendaFixaDailyLiquidity
 from domain.tax_free_calculator import TaxFreeCalculator

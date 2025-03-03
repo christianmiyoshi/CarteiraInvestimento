@@ -1,6 +1,6 @@
 import unittest
 from datetime import datetime, date
-from domain.indice import Indice, RangedIndex
+from domain.index import Indice, RangedIndex
 from domain.payment_installment import PaymentInstallment
 
 class TestIndice(unittest.TestCase):

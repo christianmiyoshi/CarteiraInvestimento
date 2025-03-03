@@ -2,7 +2,7 @@ from datetime import date, timedelta, datetime
 from functools import lru_cache
 
 from domain.helper.interest_helper import count_business_days, daily_interest_percent
-from domain.indice import Indice
+from domain.index import Indice
 from domain.ir_regressive_table import ir_regressive_table, calculate_calendar_days
 from domain.deposit import Deposit
 from domain.iof_constant import IOF_PERCENT

@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
 
-from domain.indice import RangedIndex
+from domain.index import RangedIndex
 from domain.renda_fixa import RendaFixa, IOF_PERCENT
 from services.renda_fixa_factory import RendaFixaFactory
 

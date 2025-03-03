@@ -5,10 +5,11 @@ from domain.iof_constant import IOF_PERCENT
 from domain.tax_calculator import TaxCalculator
 
 class RendaFixa:
-    def __init__(self, value, interest_year, timestamp: datetime, maturity: datetime, tax_algorithm: TaxCalculator):
-        assert timestamp < maturity
+    def __init__(self, value, interest_year, timestamp: datetime, maturity: date, tax_algorithm: TaxCalculator):
+        assert timestamp.date() < maturity
         self.interest_year = interest_year
         self.value = value
+        self.maturity = maturity
         self.timestamp = timestamp
         self.tax_algorithm = tax_algorithm
 
@@ -40,7 +41,7 @@ class RendaFixa:
     def gross_value(self, timestamp: date):
         number_days = RendaFixa.count_business_days(
             self.timestamp.date() + timedelta(days=1),
-            timestamp
+            min(timestamp, self.maturity)
         )
 
         # TODO: interest rate might change depending on the year

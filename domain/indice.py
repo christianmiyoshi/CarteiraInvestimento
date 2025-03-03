@@ -2,9 +2,9 @@ from datetime import date
 
 
 class InterestDate:
-    def __init__(self, date: date, interest: float):
+    def __init__(self, date: date, interest_year: float):
         self.date = date
-        self.interest = interest
+        self.interest = interest_year
 
 class Indice:
     def __init__(self, name: str):
@@ -20,5 +20,5 @@ class Indice:
     def get_interest_at(self, date: date):
         filtered_items = [item for item in self.interest_list if item.date <= date]
         if not filtered_items:
-            return 0
+            raise Exception(f'No interest for date {date}')
         return max(filtered_items, key=lambda x: x.date).interest

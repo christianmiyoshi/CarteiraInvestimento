@@ -14,7 +14,7 @@ class TestFreeTaxRendaFixa(unittest.TestCase):
     def test_initial_value(self):
         start_date = datetime(2025, 1, 1, 0, 0, 0, 0)
         interest = 10.0
-        maturity = start_date + relativedelta(years=2)
+        maturity = start_date.date() + relativedelta(years=2)
         renda_fixa = self.renda_fixa_factory.lci(1000,interest,start_date, maturity)
     
         self.assertEqual(renda_fixa.net_value(start_date.date()), 1000)
@@ -39,14 +39,14 @@ class TestFreeTaxRendaFixa(unittest.TestCase):
 
     def test_net_return(self):
         start_date = datetime(2025, 1, 1)
-        maturity = datetime(2027, 1, 1)
+        maturity = date(2027, 1, 1)
         start_value = 1000
         interest = 0.10
-        renda_fixa = self.renda_fixa_factory.lci(1000,interest,start_date, maturity)
+        renda_fixa = self.renda_fixa_factory.lci(start_value,interest,start_date, maturity)
 
         # TODO: this should be equal
         self.assertAlmostEqual(
-            1100,
+            start_value * (interest + 1),
             renda_fixa.gross_value(
                 date(2026, 1, 1)
             )
@@ -56,6 +56,20 @@ class TestFreeTaxRendaFixa(unittest.TestCase):
             renda_fixa.tax_iof_value(
                 date(2026, 1, 1)
             )
+        ), 10
+        
+    def test_value_after_maturity_date(self):
+        start_date = datetime(2025, 1, 1)
+        maturity = date(2027, 1, 1)
+        start_value = 1000
+        interest = 0.10
+        renda_fixa = self.renda_fixa_factory.lci(start_value,interest,start_date, maturity)
+
+        self.assertAlmostEqual(
+            start_value * (interest + 1) ** 2,
+            renda_fixa.gross_value(
+                date(9999, 1, 1)
+            ), 10
         )
         
 if __name__ == '__main__':

@@ -49,15 +49,15 @@ class TestRendaFixa(unittest.TestCase):
 
     def test_iof_without_tax(self):
         start_date = datetime(2025, 1, 1)
-        maturity = datetime(2027, 1, 1)
+        maturity = date(2027, 1, 1)
         start_value = 1000
         interest = 0.10
         renda_fixa = self.renda_fixa_factory.lci(start_value,interest,start_date, maturity)
        
         for i in range(0, 31):
-            date = (start_date + relativedelta(days=i)).date()            
+            current_date = start_date.date() + relativedelta(days=i)
             expected_data = EXPECTED_INVESTMENT_RETURN[i]
-            iof = renda_fixa.tax_iof_value(date)
+            iof = renda_fixa.tax_iof_value(current_date)
             self.assertAlmostEqual(expected_data['iof'], iof, 9, f'IOF incorrect for day {i}' )            
 
 if __name__ == '__main__':

@@ -15,9 +15,10 @@ class Wallet:
         self.credit_cards.append(credit_card)
 
     def deposit(self, value: float, timestamp: datetime.datetime):
-        self.deposits.append(
-            Deposit(value, timestamp)
-        )
+        self.deposits.append(Deposit(value, timestamp))
+
+    def add_deposit(self, deposit: Deposit):
+        self.deposits.append(deposit)
 
     def credit_card_debt(self, date: date):
         list_card_debt = map(

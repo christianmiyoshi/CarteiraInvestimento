@@ -1,6 +1,6 @@
 import unittest
 from datetime import datetime, date
-from domain.carteira import Wallet
+from domain.wallet import Wallet
 from domain.credit_card import CreditCard
 from domain.payment_installment import PaymentInstallment
 

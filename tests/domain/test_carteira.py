@@ -1,6 +1,6 @@
 import unittest
 from datetime import datetime
-from domain.carteira import Wallet
+from domain.wallet import Wallet
 
 class TestWallet(unittest.TestCase):
     def test_initial_value(self):

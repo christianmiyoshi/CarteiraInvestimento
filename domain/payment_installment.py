@@ -16,14 +16,14 @@ class PaymentInstallment:
         self.number_installments = number_installments
         self.paid_months = 0
 
-        self.deposits: list[Deposit] = []
+        self.debts: list[CreditCardDebt] = []
 
         current_date = self.start
         for month in range(number_installments):
-            self.deposits.append(
-                Deposit(
-                    -self.monthly_payment,
-                    datetime.combine(current_date, datetime.min.time()) + relativedelta(months=month),
+            self.debts.append(
+                CreditCardDebt(
+                    self.monthly_payment,
+                    current_date + relativedelta(months=month),
                 )
             )
 

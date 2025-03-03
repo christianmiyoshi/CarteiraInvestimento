@@ -60,6 +60,9 @@ class Wallet:
         for renda in self.renda_fixas:
             all_deposits += renda.deposits()
 
+        for card in self.credit_cards:
+            all_deposits += card.deposits()
+
         sum_deposits = reduce(
             lambda acc, deposit: acc + deposit.value_at(timestamp),
             all_deposits, 0

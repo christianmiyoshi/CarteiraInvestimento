@@ -21,14 +21,9 @@ class TestWalletWithCreditCard(unittest.TestCase):
         )      
 
         card.add_payment_installment(payment)
-        self.assertEqual(0, wallet.brut_value(datetime(2025, 1, 15)))
-        self.assertEqual(100, wallet.credit_card_debt(date(2025, 1, 15)))
+        self.assertEqual(-100, wallet.brut_value(datetime(2025, 1, 15)))
 
         wallet.deposit(100, datetime(2025, 1, 15))
-        self.assertEqual(100, wallet.brut_value(datetime(2025, 1, 15)))
-
-        wallet.pay_card(card, 100, datetime(2025, 1, 15))
-        self.assertEqual(0, wallet.credit_card_debt(date(2025, 1, 15)))
         self.assertEqual(0, wallet.brut_value(datetime(2025, 1, 15)))
 
     def test_payment_two_installment(self):
@@ -46,21 +41,13 @@ class TestWalletWithCreditCard(unittest.TestCase):
             number_installments
         )      
         card.add_payment_installment(payment)
-        wallet.deposit(200, datetime(2025, 1, 15))
+        wallet.deposit(200, datetime(2025, 1, 14))
+        
+        self.assertEqual(200, wallet.brut_value(date(2025, 1, 14)))
+        self.assertEqual(100, wallet.brut_value(date(2025, 1, 15)))
 
-        self.assertEqual(200, wallet.brut_value(datetime(2025, 1, 15)))
-        self.assertEqual(100, wallet.credit_card_debt(date(2025, 1, 15)))
-        wallet.pay_whole_debt(card, datetime(2025, 1, 15))        
-        self.assertEqual(0, wallet.credit_card_debt(date(2025, 1, 15)))    
-        self.assertEqual(100, wallet.brut_value(datetime(2025, 1, 15)))
-
-        self.assertEqual(100, wallet.brut_value(datetime(2025, 2, 15)))
-        self.assertEqual(100, wallet.credit_card_debt(date(2025, 2, 15)))
-        wallet.pay_whole_debt(card, datetime(2025, 2, 15))        
-        self.assertEqual(0, wallet.credit_card_debt(date(2025, 2, 15)))
+        self.assertEqual(100, wallet.brut_value(date(2025, 2, 14)))
         self.assertEqual(0, wallet.brut_value(datetime(2025, 2, 15)))
-
-        self.assertEqual(0, wallet.credit_card_debt(date(2025, 12, 31)))
 
 
 if __name__ == '__main__':

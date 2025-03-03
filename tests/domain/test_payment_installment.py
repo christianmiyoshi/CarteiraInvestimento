@@ -62,14 +62,14 @@ class TestPaymentInstallment(unittest.TestCase):
             number_installments
         )
 
-        assert 3 == len(installment.deposits)
+        assert 3 == len(installment.debts)
 
         dates = [date(2025, 1, 1), date(2025, 2, 1), date(2025, 3, 1)]
 
-        assert 3 == len(installment.deposits)
-        for index, payment in enumerate(installment.deposits):
-            self.assertEqual(-monthly_value, payment.value)
-            self.assertEqual(dates[index], payment.timestamp.date())
+        assert 3 == len(installment.debts)
+        for index, payment in enumerate(installment.debts):
+            self.assertEqual(monthly_value, payment.value)
+            self.assertEqual(dates[index], payment.date)
 
 
 

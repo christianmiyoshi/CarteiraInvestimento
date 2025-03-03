@@ -5,7 +5,7 @@ from domain.credit_card_debt import CreditCardDebt
 from domain.deposit import Deposit
 from domain.payment import Payment
 from domain.payment_installment import PaymentInstallment
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 
 class CreditCard:
@@ -14,33 +14,39 @@ class CreditCard:
 
         self.payment_day = payment_day
         self.installments: list[PaymentInstallment] = []
-        self.debts: list[Deposit] = []
-
         self.payments: list[Payment] = []
 
     def add_payment_installment(self, installment: PaymentInstallment):
         self.installments.append(installment)
-        self.debts += installment.deposits
 
     def deposits(self):
         deposits = []
-        for installment in self.payments:
-            deposits += installment.deposits
+        for installment in self.installments:
+            debts = installment.debts
+            card_deposits = [
+                Deposit(
+                    -debt.value, 
+                    datetime.combine(self.next_payment_date_after_date(debt.date), datetime.min.time())
+                ) 
+                for debt in debts
+            ]
+            deposits += card_deposits
 
         return deposits
 
     def pay(self, value: float, date: date):
         self.payments.append(Payment(value, date))
 
-    def total_debt(self, date: date):
-        list_debts = filter(
+    # Deprecated
+    def total_debt(self, date: date):        
+        list_deposits = filter(
             lambda debt: debt.timestamp.date() <= date,
-            self.debts
+            self.deposits()
         )
 
         sum_debt = reduce(
             lambda acc, debt: acc + -debt.value,
-            list_debts, 0
+            list_deposits, 0
         )
         return sum_debt
 
@@ -59,6 +65,15 @@ class CreditCard:
     def last_payment_date_before_date(self, date: date):
         if date.day < self.payment_day:
             last_payment_date = date.replace(day=1) - timedelta(days=1)
+            last_payment_date = last_payment_date.replace(day=self.payment_day)
+            return last_payment_date
+
+        last_payment_date = date.replace(day=15)
+        return last_payment_date
+    
+    def next_payment_date_after_date(self, date: date):
+        if date.day > self.payment_day:
+            last_payment_date = date.replace(day=1) + timedelta(month=1)
             last_payment_date = last_payment_date.replace(day=self.payment_day)
             return last_payment_date
 

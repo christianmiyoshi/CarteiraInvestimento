@@ -1,8 +1,9 @@
-from datetime import date
+from datetime import date, datetime
 
 from matplotlib.dates import relativedelta
 
 from domain.credit_card_debt import CreditCardDebt
+from domain.deposit import Deposit
 
 class PaymentInstallment:
 
@@ -15,14 +16,14 @@ class PaymentInstallment:
         self.number_installments = number_installments
         self.paid_months = 0
 
-        self.payments: list[CreditCardDebt] = []
+        self.deposits: list[Deposit] = []
 
         current_date = self.start
         for month in range(number_installments):
-            self.payments.append(
-                CreditCardDebt(
-                    self.monthly_payment,
-                    current_date + relativedelta(months=month),
+            self.deposits.append(
+                Deposit(
+                    -self.monthly_payment,
+                    datetime.combine(current_date, datetime.min.time()) + relativedelta(months=month),
                 )
             )
 

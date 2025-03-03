@@ -2,6 +2,7 @@ from functools import reduce
 
 from matplotlib.dates import relativedelta
 from domain.credit_card_debt import CreditCardDebt
+from domain.deposit import Deposit
 from domain.payment import Payment
 from domain.payment_installment import PaymentInstallment
 from datetime import date, timedelta
@@ -13,25 +14,32 @@ class CreditCard:
 
         self.payment_day = payment_day
         self.installments: list[PaymentInstallment] = []
-        self.debts: list[CreditCardDebt] = []
+        self.debts: list[Deposit] = []
 
         self.payments: list[Payment] = []
 
     def add_payment_installment(self, installment: PaymentInstallment):
         self.installments.append(installment)
-        self.debts += installment.payments
+        self.debts += installment.deposits
+
+    def deposits(self):
+        deposits = []
+        for installment in self.payments:
+            deposits += installment.deposits
+
+        return deposits
 
     def pay(self, value: float, date: date):
         self.payments.append(Payment(value, date))
 
     def total_debt(self, date: date):
         list_debts = filter(
-            lambda debt: debt.date <= date,
+            lambda debt: debt.timestamp.date() <= date,
             self.debts
         )
 
         sum_debt = reduce(
-            lambda acc, debt: acc + debt.debt(),
+            lambda acc, debt: acc + -debt.value,
             list_debts, 0
         )
         return sum_debt

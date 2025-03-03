@@ -68,8 +68,8 @@ class TestPaymentInstallment(unittest.TestCase):
 
         assert 3 == len(installment.payments)
         for index, payment in enumerate(installment.payments):
-            assert monthly_value == payment.value
-            assert dates[index] == payment.date
+            self.assertEqual(monthly_value, payment.value)
+            self.assertEqual(dates[index], payment.date)
 
 
 

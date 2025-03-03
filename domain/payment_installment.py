@@ -22,7 +22,7 @@ class PaymentInstallment:
             self.payments.append(
                 CreditCardDebt(
                     self.monthly_payment,
-                    (current_date + relativedelta(months=month)).date(),
+                    current_date + relativedelta(months=month),
                 )
             )
 

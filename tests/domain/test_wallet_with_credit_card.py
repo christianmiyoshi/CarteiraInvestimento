@@ -6,7 +6,7 @@ from domain.payment_installment import PaymentInstallment
 
 class TestWalletWithCreditCard(unittest.TestCase):
     def test_simple_installment(self):
-        today = datetime(2025, 1, 1)        
+        today = date(2025, 1, 1)        
         wallet = Wallet()
 
         card = CreditCard(15)
@@ -32,7 +32,7 @@ class TestWalletWithCreditCard(unittest.TestCase):
         self.assertEqual(0, wallet.brut_value(datetime(2025, 1, 15)))
 
     def test_payment_two_installment(self):
-        today = datetime(2025, 1, 1)        
+        today = date(2025, 1, 1)        
         wallet = Wallet()
 
         card = CreditCard(15)

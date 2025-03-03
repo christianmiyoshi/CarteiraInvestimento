@@ -1,11 +1,11 @@
 import unittest
-from datetime import datetime, date
+from datetime import date
 from domain.credit_card import CreditCard
 from domain.payment_installment import PaymentInstallment
 
 class TestCreditCard(unittest.TestCase):
     def test_simple_payment(self):
-        today = datetime(2025, 1, 1)
+        today = date(2025, 1, 1)
         monthly_value = 100
         number_installments = 10        
         installment = PaymentInstallment(

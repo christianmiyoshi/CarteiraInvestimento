@@ -1,5 +1,7 @@
 import datetime
+from datetime import date
 from functools import reduce
+from domain.credit_card import CreditCard
 from domain.renda_fixa import RendaFixa
 from domain.deposit import Deposit
 
@@ -7,11 +9,27 @@ from domain.deposit import Deposit
 class Wallet:
     def __init__(self):
         self.deposits: list[Deposit] = []
+        self.credit_cards: list[CreditCard] = []
+
+    def add_credit_card(self, credit_card: CreditCard):
+        self.credit_cards.append(credit_card)
 
     def deposit(self, value: float, timestamp: datetime.datetime):
         self.deposits.append(
             Deposit(value, timestamp)
         )
+
+    def credit_card_debt(self, date: date):
+        list_card_debt = map(
+            lambda card: max(0, -card.result(date)),
+            self.credit_cards,
+        )
+        return sum(list_card_debt)
+
+    def pay_card(self, card: CreditCard, value: float, timestamp: datetime.datetime):
+        assert card in self.credit_cards
+        card.pay(value, timestamp.date())
+        self.withdraw(value, timestamp)
 
     def withdraw(self, value: float, timestamp: datetime.datetime):
         self.deposits.append(

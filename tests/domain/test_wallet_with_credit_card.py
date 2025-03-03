@@ -50,13 +50,13 @@ class TestWalletWithCreditCard(unittest.TestCase):
 
         self.assertEqual(200, wallet.brut_value(datetime(2025, 1, 15)))
         self.assertEqual(100, wallet.credit_card_debt(date(2025, 1, 15)))
-        wallet.pay_card(card, 100, datetime(2025, 1, 15))        
+        wallet.pay_whole_debt(card, datetime(2025, 1, 15))        
         self.assertEqual(0, wallet.credit_card_debt(date(2025, 1, 15)))    
         self.assertEqual(100, wallet.brut_value(datetime(2025, 1, 15)))
 
         self.assertEqual(100, wallet.brut_value(datetime(2025, 2, 15)))
         self.assertEqual(100, wallet.credit_card_debt(date(2025, 2, 15)))
-        wallet.pay_card(card, 100, datetime(2025, 2, 15))        
+        wallet.pay_whole_debt(card, datetime(2025, 2, 15))        
         self.assertEqual(0, wallet.credit_card_debt(date(2025, 2, 15)))
         self.assertEqual(0, wallet.brut_value(datetime(2025, 2, 15)))
 

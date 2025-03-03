@@ -32,6 +32,12 @@ class Wallet:
         card.pay(value, timestamp.date())
         self.withdraw(value, timestamp)
 
+    def pay_whole_debt(self, card: CreditCard, timestamp: datetime.datetime):
+        assert card in self.credit_cards
+        result = card.result(timestamp.date())
+        if result < 0:
+            self.pay_card(card, abs(result), timestamp)
+
     def withdraw(self, value: float, timestamp: datetime.datetime):
         self.deposits.append(
             Deposit(-value, timestamp)

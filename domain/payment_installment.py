@@ -1,5 +1,9 @@
 from datetime import date
 
+from matplotlib.dates import relativedelta
+
+from domain.credit_card_debt import CreditCardDebt
+
 class PaymentInstallment:
 
     def __init__(self, start: date, monthly_payment: float, number_installments: int):
@@ -10,6 +14,17 @@ class PaymentInstallment:
         self.monthly_payment = monthly_payment
         self.number_installments = number_installments
         self.paid_months = 0
+
+        self.payments: list[CreditCardDebt] = []
+
+        current_date = self.start        
+        for month in range(number_installments):
+            self.payments.append(
+                CreditCardDebt(
+                    self.monthly_payment,
+                    current_date + relativedelta(months=month),                    
+                )
+            )
 
     def pay(self):
         assert self.paid_months < self.number_installments

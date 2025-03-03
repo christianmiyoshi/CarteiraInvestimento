@@ -1,5 +1,5 @@
 import unittest
-from datetime import datetime
+from datetime import datetime, date
 from domain.payment_installment import PaymentInstallment
 
 class TestPaymentInstallment(unittest.TestCase):
@@ -51,6 +51,29 @@ class TestPaymentInstallment(unittest.TestCase):
 
         payment.pay_up_to_date(datetime(2025, 2, 1))
         assert payment.paid_value() == 2 * monthly_value
+
+    def test_list_payments(self):
+        today = date(2025, 1, 1)
+        monthly_value = 100
+        number_installments = 3
+        installment = PaymentInstallment(
+            today,
+            monthly_value,
+            number_installments
+        )
+
+        assert 3 == len(installment.payments)
+
+        dates = [date(2025, 1, 1), date(2025, 2, 1), date(2025, 3, 1)]
+
+        assert 3 == len(installment.payments)
+        for index, payment in enumerate(installment.payments):
+            assert monthly_value == payment.value
+            assert dates[index] == payment.date
+
+
+
+
         
 
 if __name__ == '__main__':

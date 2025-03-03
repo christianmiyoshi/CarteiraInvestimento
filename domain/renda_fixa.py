@@ -1,6 +1,7 @@
 from datetime import date, timedelta, datetime
 from functools import lru_cache
 
+from domain.helper.interest_helper import count_business_days, daily_interest_percent
 from domain.indice import Indice
 from domain.ir_regressive_table import ir_regressive_table, calculate_calendar_days
 from domain.deposit import Deposit
@@ -31,18 +32,18 @@ class RendaFixa:
         calendar_days = calculate_calendar_days(self.timestamp.date(), min(date, self.maturity))
         aliquota = ir_regressive_table(calendar_days)
         aliquota_sub_1 = (1 - aliquota)
-        daily_interest_percent = RendaFixa.daily_interest_percent(
+        interest_percent = daily_interest_percent(
             self.interest_year,
             datetime(self.timestamp.year, 1, 1).date(),
             datetime(self.timestamp.year + 1, 1, 1).date(),
         )
-        number_days = RendaFixa.count_business_days(
+        number_days = count_business_days(
             self.timestamp.date() + timedelta(days=1),
             min(date, self.maturity)
         )
 
         numerator = current_value        
-        denominator = aliquota_sub_1 * (1 + daily_interest_percent)**number_days - aliquota_sub_1 + 1
+        denominator = aliquota_sub_1 * (1 + interest_percent)**number_days - aliquota_sub_1 + 1
 
         return numerator / denominator
 
@@ -79,35 +80,27 @@ class RendaFixa:
         return iof_tax
 
     def gross_value(self, timestamp: date):
-        number_days = RendaFixa.count_business_days(
+        number_days = count_business_days(
             self.timestamp.date() + timedelta(days=1),
             min(timestamp, self.maturity)
         )
-
-        # TODO: interest rate might change depending on the year
+        
         daily_interest_percent = self.daily_percent()
+        percent_in_period = pow((1 + daily_interest_percent), number_days)
+        percent_indice_in_period = self.indice.get_interest_in_period(
+            self.timestamp.date(), min(timestamp, self.maturity)
+        )
 
-        return self.value * pow((1 + daily_interest_percent), number_days)
+        return self.value * ((percent_in_period - 1) + (percent_indice_in_period - 1) + 1)
 
     def daily_percent(self):
-        daily_interest_percent = RendaFixa.daily_interest_percent(
+        # TODO: interest rate might change depending on the year
+        percent = daily_interest_percent(
             self.interest_year,
             datetime(self.timestamp.year, 1, 1).date(),
             datetime(self.timestamp.year + 1, 1, 1).date(),
         )
         
-        return daily_interest_percent
-
-    @staticmethod
-    def count_business_days(start_included: date, end_included: date):            
-        return sum(1 for idx in range((end_included - start_included).days + 1) 
-                   if (start_included + timedelta(days=idx)).weekday() < 5)
-
-    @staticmethod
-    def daily_interest_percent(interest: float, start: date, end: date):
-        days = RendaFixa.count_business_days(start + timedelta(days=1), end)
-        return pow((1 + interest), 1/days) - 1
-
-
+        return percent
 
 

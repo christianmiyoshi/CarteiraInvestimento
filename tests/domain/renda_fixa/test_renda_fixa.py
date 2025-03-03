@@ -2,6 +2,7 @@ import unittest
 from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
 
+from domain.helper.interest_helper import count_business_days, daily_interest_percent
 from domain.renda_fixa import RendaFixa, IOF_PERCENT
 from services.renda_fixa_factory import RendaFixaFactory
 
@@ -25,15 +26,15 @@ class TestFreeTaxRendaFixa(unittest.TestCase):
         start_date = datetime(2025, 1, 1)
         end_date = datetime(2025, 12, 31)
 
-        count_business_days = RendaFixa.count_business_days(start_date, end_date)
-        self.assertEqual(count_business_days, 261)
+        business_days = count_business_days(start_date, end_date)
+        self.assertEqual(business_days, 261)
 
     def test_daily_interest_percent(self):
         start_date = datetime(2025, 1, 1)
         end_date = datetime(2025, 12, 31)
         interest = 0.1
         decimal_places = 5
-        self.assertAlmostEqual(RendaFixa.daily_interest_percent(
+        self.assertAlmostEqual(daily_interest_percent(
             interest, start_date, end_date
         ), 0.00036523978, decimal_places)
 
